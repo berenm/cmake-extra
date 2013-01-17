@@ -21,9 +21,9 @@ function(cheetah_generate CHEETAH_TARGET CHEETAH_SOURCE)
   endif()
 
   execute_process(
-    COMMAND grep "@cheetah" ${CMAKE_CURRENT_SOURCE_DIR}/${CHEETAH_SOURCE}
+    COMMAND grep "cheetah" ${CMAKE_CURRENT_SOURCE_DIR}/${CHEETAH_SOURCE}
     COMMAND head -1
-    COMMAND sed -re "s/^.*@cheetah //g"
+    COMMAND sed -re "s/^.*cheetah //g"
     OUTPUT_VARIABLE CHEETAH_OPTIONS
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )

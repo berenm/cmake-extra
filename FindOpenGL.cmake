@@ -4,6 +4,8 @@ endif()
 set(__FIND_OPENGL_CMAKE__ TRUE)
 
 
+enable_language(C CXX)
+
 find_package(PkgConfig REQUIRED)
 set(OPENGL_FOUND "OPENGL-NOTFOUND")
 

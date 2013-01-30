@@ -17,5 +17,3 @@ if(OPENGL_gl_LIBRARY)
 else()
   pkg_check_modules(OPENGL REQUIRED x11 gl egl)
 endif()
-
-message(STATUS "OPENGL_LIBRARIES: ${OPENGL_LIBRARIES}")

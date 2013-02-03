@@ -1,12 +1,10 @@
 ============================
 CMake Extra
 ============================
-
 Extra CMake scripts used in my projects.
 
 USAGE
 ````````````````````````````
-
 1. Download the CMakeExtraBootstrap.cmake file in a cmake/ subfolder of your project:
 
 .. code:: bash
@@ -21,5 +19,6 @@ USAGE
 
   list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
   include(CMakeExtraBootstrap)
+
 
 ``cmake-extra`` will automatically try to keep itself up-to-date.

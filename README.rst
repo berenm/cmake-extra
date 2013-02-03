@@ -3,6 +3,7 @@ CMake Extra
 ============================
 Extra CMake scripts used in my projects.
 
+
 USAGE
 ````````````````````````````
 1. Download the CMakeExtraBootstrap.cmake file in a cmake/ subfolder of your project:
@@ -22,3 +23,11 @@ USAGE
 
 
 ``cmake-extra`` will automatically try to keep itself up-to-date.
+
+
+COPYING INFORMATION
+````````````````````````````
+
+ Distributed under the Boost Software License, Version 1.0.
+
+ See accompanying file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt

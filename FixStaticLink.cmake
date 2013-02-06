@@ -1,7 +1,7 @@
 if(__FIX_STATIC_LINK_CMAKE__)
   return()
 endif()
-set(__FIX_STATIC_LINK_CMAKE__)
+set(__FIX_STATIC_LINK_CMAKE__ TRUE)
 
 
 enable_language(C CXX)

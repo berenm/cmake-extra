@@ -1,7 +1,7 @@
 if(__FIX_CCACHE_CMAKE__)
   return()
 endif()
-set(__FIX_CCACHE_CMAKE__)
+set(__FIX_CCACHE_CMAKE__ TRUE)
 
 
 enable_language(C CXX)

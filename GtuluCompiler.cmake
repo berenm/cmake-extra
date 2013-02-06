@@ -1,7 +1,7 @@
 if(__GTULU_COMPILER_CMAKE__)
   return()
 endif()
-set(__GTULU_COMPILER_CMAKE__)
+set(__GTULU_COMPILER_CMAKE__ TRUE)
 
 
 include(CMakeParseArguments)

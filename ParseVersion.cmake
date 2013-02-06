@@ -1,7 +1,7 @@
 if(__PARSE_VERSION_CMAKE__)
   return()
 endif()
-set(__PARSE_VERSION_CMAKE__)
+set(__PARSE_VERSION_CMAKE__ TRUE)
 
 
 include(CMakeParseArguments)

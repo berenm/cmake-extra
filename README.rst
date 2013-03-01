@@ -1,8 +1,8 @@
-============================
-CMake Extra
-============================
 Extra CMake scripts used in my projects.
-
+========================================
+.. image:: http://stillmaintained.com/berenm/cmake-extra.png
+    :alt: Still Maintained?
+    :target: http://stillmaintained.com/berenm/cmake-extra
 
 USAGE
 ````````````````````````````

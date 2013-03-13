@@ -4,6 +4,13 @@ endif()
 set(__FIX_STATIC_LINK_CMAKE__ TRUE)
 
 
+# Tested on MacOSX 10.8.2 with XCode 4.6 Command Line Tools
+# The flags do not make the linker happy
+if(CMAKE_HOST_APPLE)
+  return()
+endif()
+
+
 enable_language(C CXX)
 
 include(CheckCCompilerFlag)

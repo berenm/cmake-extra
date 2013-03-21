@@ -39,7 +39,7 @@ EOF
 fi
 
 
-for file in src*.[ch]pp.gcov include*.[ch]pp.gcov
+for file in $(find * -iname '*.gcov' -print | egrep '^(src|include)')
 do
   srcname=$(echo ${file} | sed -re 's%#%\/%g; s%.gcov$%%')
   cat >>coverage.json <<EOF

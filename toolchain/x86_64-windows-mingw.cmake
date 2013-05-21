@@ -2,17 +2,22 @@
 set(CMAKE_SYSTEM_NAME Windows)
 
 # Choose an appropriate compiler prefix
-set(COMPILER_PREFIX "x86_64-w64-mingw32")
+set(CMAKE_TOOLCHAIN_PREFIX "x86_64-w64-mingw32")
 
 
 # which compilers to use for C and C++
-find_program(CMAKE_RC_COMPILER  NAMES ${COMPILER_PREFIX}-windres)
-find_program(CMAKE_C_COMPILER   NAMES ${COMPILER_PREFIX}-gcc)
-find_program(CMAKE_CXX_COMPILER NAMES ${COMPILER_PREFIX}-g++)
+find_program(CMAKE_RC_COMPILER  NAMES ${CMAKE_TOOLCHAIN_PREFIX}-windres)
+find_program(CMAKE_C_COMPILER   NAMES ${CMAKE_TOOLCHAIN_PREFIX}-gcc)
+find_program(CMAKE_CXX_COMPILER NAMES ${CMAKE_TOOLCHAIN_PREFIX}-g++)
+find_program(CMAKE_ASM_COMPILER NAMES ${CMAKE_TOOLCHAIN_PREFIX}-as)
+
+
+
 
 
 # here is the target environment located
-set(CMAKE_FIND_ROOT_PATH /usr/${COMPILER_PREFIX})
+set(CMAKE_FIND_ROOT_PATH /usr/${CMAKE_TOOLCHAIN_PREFIX} /usr/local/${CMAKE_TOOLCHAIN_PREFIX})
+
 
 # adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search 
@@ -20,3 +25,4 @@ set(CMAKE_FIND_ROOT_PATH /usr/${COMPILER_PREFIX})
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_CROSS_COMPILING TRUE)

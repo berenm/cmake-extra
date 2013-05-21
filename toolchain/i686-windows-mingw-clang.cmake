@@ -4,21 +4,15 @@ set(CMAKE_SYSTEM_NAME Windows)
 # Choose an appropriate compiler prefix
 set(CMAKE_TOOLCHAIN_PREFIX "i686-w64-mingw32")
 
+
 # which compilers to use for C and C++
 find_program(CMAKE_RC_COMPILER  NAMES ${CMAKE_TOOLCHAIN_PREFIX}-windres)
 find_program(CMAKE_C_COMPILER   NAMES ${CMAKE_TOOLCHAIN_PREFIX}-gcc)
 find_program(CMAKE_CXX_COMPILER NAMES ${CMAKE_TOOLCHAIN_PREFIX}-g++)
 find_program(CMAKE_ASM_COMPILER NAMES ${CMAKE_TOOLCHAIN_PREFIX}-as)
 
-
-# fake the mingw toolchain that is otherwise not detected by cmake
-set(_CMAKE_TOOLCHAIN_PREFIX ${CMAKE_TOOLCHAIN_PREFIX}-)
-
-set(CMAKE_C_COMPILER "clang" "-target ${CMAKE_TOOLCHAIN_PREFIX} -isystem /usr/${CMAKE_TOOLCHAIN_PREFIX}/include")
-set(CMAKE_C_PLATFORM_ID "MinGW")
-
-set(CMAKE_CXX_COMPILER "clang++" "-target ${CMAKE_TOOLCHAIN_PREFIX} -isystem /usr/${CMAKE_TOOLCHAIN_PREFIX}/include")
-set(CMAKE_CXX_PLATFORM_ID "MinGW")
+set(CMAKE_C_COMPILER   "clang"   "-target ${CMAKE_TOOLCHAIN_PREFIX} -isystem /usr/${CMAKE_TOOLCHAIN_PREFIX}/include -isystem /usr/local/${CMAKE_TOOLCHAIN_PREFIX}/include")
+set(CMAKE_CXX_COMPILER "clang++" "-target ${CMAKE_TOOLCHAIN_PREFIX} -isystem /usr/${CMAKE_TOOLCHAIN_PREFIX}/include -isystem /usr/local/${CMAKE_TOOLCHAIN_PREFIX}/include")
 
 
 # here is the target environment located

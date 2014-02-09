@@ -31,3 +31,9 @@ COPYING INFORMATION
  Distributed under the Boost Software License, Version 1.0.
 
  See accompanying file LICENSE or copy at http://www.boost.org/LICENSE_1_0.txt
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/berenm/cmake-extra/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+

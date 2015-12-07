@@ -1,0 +1,73 @@
+language: cpp
+sudo: false
+
+notifications:
+  email: false
+
+cache:
+  directories:
+  - $HOME/.cache
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      env: CMAKE_VERSION=2.8.12.2
+      addons: &libc6-i386
+        apt:
+          packages: ['libc6:i386']
+
+    - os: linux
+      compiler: gcc
+      env: CMAKE_VERSION=3.0.2
+      addons: *libc6-i386
+
+    - os: linux
+      compiler: gcc
+      env: CMAKE_VERSION=3.4.1
+
+    - os: osx
+      osx_image: xcode7.1
+      compiler: clang
+      env: CMAKE_VERSION=2.8.12.2
+
+    - os: osx
+      osx_image: xcode7.1
+      compiler: clang
+      env: CMAKE_VERSION=3.0.2
+
+    - os: osx
+      osx_image: xcode7.1
+      compiler: clang
+      env: CMAKE_VERSION=3.4.1
+
+install:
+  - mkdir -p $HOME/.cache
+  - mkdir -p $HOME/.local
+  - export PATH="$HOME/.local/bin;$PATH"
+
+  - |
+    case "${TRAVIS_OS_NAME}-${CMAKE_VERSION}" in
+      linux-2.8*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Linux-i386.tar.gz";;
+      linux-3.0*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Linux-i386.tar.gz";;
+      linux-3.*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz";;
+      osx-2.8*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-universal.tar.gz";;
+      osx-3.0*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-universal.tar.gz";;
+      osx-3.1*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-universal.tar.gz";;
+      osx-3.*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-x86_64.tar.gz";;
+    esac
+
+  - |
+    if [[ ! -f "$HOME/.cache/${CMAKE_SOURCE}" ]]; then
+      travis_retry wget --quiet --no-check-certificate https://cmake.org/files/v${CMAKE_VERSION/${CMAKE_VERSION#?.?}/}/${CMAKE_SOURCE} -P $HOME/.cache
+    fi
+
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      tar --strip-components=1 -xf $HOME/.cache/${CMAKE_SOURCE} -C $HOME/.local
+    else
+      tar --strip-components=3 -xf $HOME/.cache/${CMAKE_SOURCE} -C $HOME/.local
+    fi
+
+script:
+  - cmake --version

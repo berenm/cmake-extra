@@ -71,3 +71,5 @@ install:
 
 script:
   - cmake --version
+  - cmake -BTests/library/build -HTests/library
+  - cmake --build Tests/library/build --target install -- DESTDIR=../install

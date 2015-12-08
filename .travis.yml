@@ -73,3 +73,9 @@ script:
   - cmake --version
   - cmake -BTests/library/build -HTests/library
   - cmake --build Tests/library/build --target install -- DESTDIR=../install
+
+  - cmake -BTests/executable/build-source -HTests/executable -DTest_DIR=../library
+  - cmake --build Tests/executable/build-source --target install -- DESTDIR=../install
+
+  - cmake -BTests/executable/build-built -HTests/executable -DCMAKE_PREFIX_PATH=../library/install/usr/local
+  - cmake --build Tests/executable/build-built --target install -- DESTDIR=../install

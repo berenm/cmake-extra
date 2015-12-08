@@ -8,6 +8,11 @@ cache:
   directories:
   - $HOME/.cache
 
+env:
+  global:
+    CACHE_DIR: $HOME/.cache
+    TOOLS_DIR: $HOME/.local
+
 matrix:
   include:
     - os: linux
@@ -41,33 +46,15 @@ matrix:
       compiler: clang
       env: CMAKE_VERSION=3.4.1
 
+before_install:
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew install cmake
+    fi
+
 install:
-  - mkdir -p $HOME/.cache
-  - mkdir -p $HOME/.local
-  - export PATH="$HOME/.local/bin;$PATH"
-
-  - |
-    case "${TRAVIS_OS_NAME}-${CMAKE_VERSION}" in
-      linux-2.8*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Linux-i386.tar.gz";;
-      linux-3.0*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Linux-i386.tar.gz";;
-      linux-3.*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz";;
-      osx-2.8*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-universal.tar.gz";;
-      osx-3.0*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-universal.tar.gz";;
-      osx-3.1*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-universal.tar.gz";;
-      osx-3.*) export CMAKE_SOURCE="cmake-${CMAKE_VERSION}-Darwin-x86_64.tar.gz";;
-    esac
-
-  - |
-    if [[ ! -f "$HOME/.cache/${CMAKE_SOURCE}" ]]; then
-      travis_retry wget --quiet --no-check-certificate https://cmake.org/files/v${CMAKE_VERSION/${CMAKE_VERSION#?.?}/}/${CMAKE_SOURCE} -P $HOME/.cache
-    fi
-
-  - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      tar --strip-components=1 -xf $HOME/.cache/${CMAKE_SOURCE} -C $HOME/.local
-    else
-      tar --strip-components=3 -xf $HOME/.cache/${CMAKE_SOURCE} -C $HOME/.local
-    fi
+  - cmake -P Tests/install.cmake
+  - export PATH="$TOOLS_DIR/bin:$PATH"
 
 script:
   - cmake --version

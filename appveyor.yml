@@ -1,0 +1,43 @@
+version: 1.0.{build}
+os: Visual Studio 2015
+clone_depth: 1
+
+matrix:
+  fast_finish: true
+
+platform: x86
+configuration: Debug
+
+cache:
+  - C:\Cache
+
+environment:
+  global:
+    CACHE_DIR: C:\Cache
+    TOOLS_DIR: C:\Tools
+
+  matrix:
+    - CMAKE_VERSION: 2.8.12.2
+      CMAKE_GENERATOR: Visual Studio 12
+    - CMAKE_VERSION: 3.0.2
+      CMAKE_GENERATOR: Visual Studio 12
+    - CMAKE_VERSION: 3.4.1
+      CMAKE_GENERATOR: Visual Studio 12
+
+install:
+  - cmake -P Tests/install.cmake
+  - ps: Move-Item $env:TOOLS_DIR\cmake* $env:TOOLS_DIR\CMake
+
+build_script:
+  - set PATH=%TOOLS_DIR%\CMake\bin;%PATH%
+  - cmake --version
+  - cmake --help
+
+  - cmake -G"%CMAKE_GENERATOR%" -BTests/library/build -HTests/library
+  - cmake --build Tests/library/build --target install
+
+  - cmake -G"%CMAKE_GENERATOR%" -BTests/executable/build-source -HTests/executable -DTest_DIR=../library
+  - cmake --build Tests/executable/build-source --target install
+
+  - cmake -G"%CMAKE_GENERATOR%" -BTests/executable/build-built -HTests/executable
+  - cmake --build Tests/executable/build-built --target install

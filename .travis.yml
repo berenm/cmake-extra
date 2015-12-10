@@ -1,0 +1,92 @@
+language: cpp
+sudo: false
+
+notifications:
+  email: false
+
+cache:
+  apt: true
+  ccache: true
+  directories:
+  - "$HOME/.cache"
+  - "$HOME/.ccache"
+
+env:
+  global:
+    CACHE_DIR: "$HOME/.cache"
+    TOOLS_DIR: "$HOME/.local"
+    CMAKE_VERSION: 3.4.1
+    GCC_VERSION: 5
+    USE_CCACHE: 1
+    CCACHE_COMPRESS: 1
+    CCACHE_MAXSIZE: 200M
+    CCACHE_CPP2: 1
+
+matrix:
+  include:
+  - os: linux
+    compiler: gcc
+    addons: &1
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-5
+    env:
+      BUILD_OS: linux
+      BUILD_SHARED: true
+
+  - os: linux
+    compiler: gcc
+    addons: *1
+    env:
+      BUILD_OS: linux
+      BUILD_SHARED: false
+
+  - os: osx
+    osx_image: xcode7
+    compiler: clang
+    env:
+      BUILD_OS: osx
+      BUILD_SHARED: true
+
+  - os: osx
+    osx_image: xcode7
+    compiler: clang
+    env:
+      BUILD_OS: osx
+      BUILD_SHARED: false
+
+before_install:
+- |
+  if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+    brew install cmake ccache
+    export HOST_CC='clang'
+    export HOST_CXX='clang++'
+  else
+    export HOST_CC='gcc-5'
+    export HOST_CXX='g++-5'
+  fi
+
+install:
+- cmake -P InstallCMake.cmake
+
+before_script:
+- 'export CC="ccache ${HOST_CC}"'
+- 'export CXX="ccache ${HOST_CXX}"'
+
+script:
+- '$TOOLS_DIR/bin/cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=${BUILD_SHARED}'
+- '$TOOLS_DIR/bin/cmake --build build --target packages'
+- git clean -fd
+
+deploy:
+  provider: releases
+  api_key:
+    secure: QJDgwCis131kNpumQRciL882sfoGSVFGv2ESdl6XtIg7KE+byZESGf/YtTI9w+wK7AjBxgYdOIUX9tllxscWS3AKBrf7Alt01Fvulb0dyjT6TTyFipn4hXmF/WI0Rjpvcw4gdOdMvfxbNhTepRNXDeMvjcr8Ugg+6wsfS+9BPUs=
+  file: build/*.tar.xz
+  file_glob: true
+  skip_cleanup: true
+  on:
+    repo: berenm/cmake-extra
+    tags: true

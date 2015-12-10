@@ -1,0 +1,55 @@
+version: 1.0.{build}
+os: Visual Studio 2015
+clone_depth: 1
+
+matrix:
+  fast_finish: true
+
+platform: x64
+
+configuration: Release
+
+cache:
+  - C:\Cache
+
+environment:
+  global:
+    CACHE_DIR: C:\Cache
+    TOOLS_DIR: C:\Tools
+    CMAKE_VERSION: 3.4.1
+
+  matrix:
+    - TARGET_ARCH: amd64
+      BUILD_SHARED: false
+    - TARGET_ARCH: amd64
+      BUILD_SHARED: true
+    - TARGET_ARCH: amd64_x86
+      BUILD_SHARED: false
+    - TARGET_ARCH: amd64_x86
+      BUILD_SHARED: true
+    - TARGET_ARCH: amd64_arm
+      BUILD_SHARED: false
+#    - TARGET_ARCH: amd64_arm
+#      BUILD_SHARED: true
+
+install:
+  - cmake -P InstallCMake.cmake
+  - ps: Move-Item $env:TOOLS_DIR\cmake* $env:TOOLS_DIR\CMake
+
+build_script:
+  - set PATH=%TOOLS_DIR%\CMake\bin;%PATH%
+  - call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" %TARGET_ARCH%
+  - cmake -G"NMake Makefiles" -Bbuild -H. -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=%BUILD_SHARED%
+  - cmake --build build --target packages
+
+artifacts:
+  - path: build\*.tar.xz
+
+deploy:
+  provider: GitHub
+  description: 'Windows release'
+  auth_token:
+    secure: /lJJOUvn3pAYTUDbjRwOOnQ1BY1xKftgPguR5hn1z86PPQSf6dX0AMTybxRllSjL
+  artifact: /.*\.tar\.xz/
+  on:
+    appveyor_repo_tag: true

@@ -1,8 +1,9 @@
 set(png_DIR ${CMAKE_SOURCE_DIR}/packages/png)
+set(png_VERSION 1.6.20)
 
 if (NOT EXISTS "${png_DIR}/src")
   message(STATUS "Cloning png package sources...")
-  execute_process(COMMAND "${GIT_EXECUTABLE}" clone --depth 1 --branch v1.6.20
+  execute_process(COMMAND "${GIT_EXECUTABLE}" clone --depth 1 --branch v${png_VERSION}
     https://github.com/glennrp/libpng "${png_DIR}/src" ERROR_QUIET)
 
   file(MAKE_DIRECTORY "${png_DIR}/include")
@@ -19,11 +20,6 @@ if (NOT EXISTS "${png_DIR}/src")
   # Because of missing utime.h on windows
   # TODO: fix pngcrush.c
   file(REMOVE "${png_DIR}/src/pngcrush.c")
-
-  execute_process(COMMAND "${GIT_EXECUTABLE}" describe --all
-    WORKING_DIRECTORY "${png_DIR}/src"
-    OUTPUT_VARIABLE png_VERSION)
-  string(REGEX REPLACE "^[^0-9]*([0-9]+(\\.[0-9]+)*)[^0-9]*$" "\\1" png_VERSION "${png_VERSION}")
 
   file(WRITE "${png_DIR}/png-config.cmake"
     "add_subdirectory(\"${png_DIR}\" \"\${CMAKE_BINARY_DIR}/packages/png\" EXCLUDE_FROM_ALL)\n")

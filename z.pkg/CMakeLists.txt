@@ -1,8 +1,9 @@
 set(z_DIR ${CMAKE_SOURCE_DIR}/packages/z)
+set(z_VERSION 1.2.8)
 
 if (NOT EXISTS "${z_DIR}/src")
   message(STATUS "Cloning z package sources...")
-  execute_process(COMMAND "${GIT_EXECUTABLE}" clone --depth 1 --branch v1.2.8
+  execute_process(COMMAND "${GIT_EXECUTABLE}" clone --depth 1 --branch v${z_VERSION}
     https://github.com/madler/zlib "${z_DIR}/src" ERROR_QUIET)
 
   file(MAKE_DIRECTORY "${z_DIR}/include")
@@ -12,11 +13,6 @@ if (NOT EXISTS "${z_DIR}/src")
   file(REMOVE_RECURSE "${z_DIR}/src/contrib")
   file(REMOVE_RECURSE "${z_DIR}/src/test")
   file(REMOVE_RECURSE "${z_DIR}/src/examples")
-
-  execute_process(COMMAND "${GIT_EXECUTABLE}" describe --all
-    WORKING_DIRECTORY "${z_DIR}/src"
-    OUTPUT_VARIABLE z_VERSION)
-  string(REGEX REPLACE "^[^0-9]*([0-9]+(\\.[0-9]+)*)[^0-9]*$" "\\1" z_VERSION "${z_VERSION}")
 
   file(WRITE "${z_DIR}/z-config.cmake"
     "add_subdirectory(\"${z_DIR}\" \"\${CMAKE_BINARY_DIR}/packages/z\" EXCLUDE_FROM_ALL)\n")

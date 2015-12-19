@@ -1,0 +1,26 @@
+diff --git a/bzip2.c b/bzip2.c
+index 6de9d1d..bc6295f 100644
+--- a/bzip2.c
++++ b/bzip2.c
+@@ -1773,7 +1773,7 @@ void addFlagsFromEnvVar ( Cell** argList, Char* varName )
+ /*---------------------------------------------*/
+ #define ISFLAG(s) (strcmp(aa->name, (s))==0)
+ 
+-IntNative main ( IntNative argc, Char *argv[] )
++int main ( int argc, char *argv[] )
+ {
+    Int32  i, j;
+    Char   *tmp;
+diff --git a/bzip2recover.c b/bzip2recover.c
+index f9de049..055b4f0 100644
+--- a/bzip2recover.c
++++ b/bzip2recover.c
+@@ -298,7 +298,7 @@ MaybeUInt64 bEnd   [BZ_MAX_HANDLED_BLOCKS];
+ MaybeUInt64 rbStart[BZ_MAX_HANDLED_BLOCKS];
+ MaybeUInt64 rbEnd  [BZ_MAX_HANDLED_BLOCKS];
+ 
+-Int32 main ( Int32 argc, Char** argv )
++int main ( int argc, char** argv )
+ {
+    FILE*       inFile;
+    FILE*       outFile;

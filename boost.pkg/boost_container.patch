@@ -1,0 +1,26 @@
+diff --git a/src/alloc_lib.c b/src/alloc_lib.c
+index 3b24be4..15ef5b5 100644
+--- a/src/alloc_lib.c
++++ b/src/alloc_lib.c
+@@ -16,7 +16,7 @@
+ #endif
+ 
+ #if DLMALLOC_VERSION == 286
+-   #include "dlmalloc_ext_2_8_6.c"
++   #include "dlmalloc_ext_2_8_6.i"
+ #else
+    #error "Unsupported boost_cont_VERSION version"
+ #endif
+diff --git a/src/dlmalloc_ext_2_8_6.c b/src/dlmalloc_ext_2_8_6.c
+index 2b6b138..d636f4e 100644
+--- a/src/dlmalloc_ext_2_8_6.c
++++ b/src/dlmalloc_ext_2_8_6.c
+@@ -33,7 +33,7 @@
+ #ifdef __GNUC__
+ #define FORCEINLINE inline
+ #endif
+-#include "dlmalloc_2_8_6.c"
++#include "dlmalloc_2_8_6.i"
+ 
+ #ifdef _MSC_VER
+ #pragma warning (push)

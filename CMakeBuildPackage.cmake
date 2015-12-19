@@ -75,8 +75,10 @@ function(build_package)
 
   file(GLOB_RECURSE sources RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "src/*.c" "src/*.cpp" "src/*.cc" "src/*.c++")
+  list(SORT sources)
   file(GLOB_RECURSE headers RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "src/*.h" "src/*.hpp" "src/*.hh" "src/*.h++")
+  list(SORT headers)
 
   set(package_sources ${sources})
   set(package_headers ${headers})
@@ -88,7 +90,7 @@ function(build_package)
     string(REGEX REPLACE "/\\*(\\*[^/]|[^*]+)*\\*/" "" contents "${contents}")
     string(REGEX REPLACE "//[^\n]*\n" "" contents "${contents}")
 
-    if (contents MATCHES "(int|void)[\t\n ]+main[\t\n ]*\((|void|int[^,\)]*,[\t\n ]*char[^,\)]*)\)")
+    if (contents MATCHES "(int|void)[\t\n ]+main[\t\n ]*(\\([\t\n ]*\\)|\\([\t\n ]*void[\t\n ]*\\)|\\([\t\n ]*int[^,\\)]*,[\t\n ]*char[^,\\)]*\\))")
       message(STATUS "Found executable in ${source}")
 
       get_filename_component(directory "${source}" DIRECTORY)
@@ -101,7 +103,14 @@ function(build_package)
       endif()
       set(${executable}_dir "${directory}")
 
-      add_executable(${executable} ${source})
+      if (executable STREQUAL package)
+        add_executable(${executable}-exe ${source})
+        set_target_properties(${executable}-exe PROPERTIES OUTPUT_NAME ${executable})
+        set(executable "${executable}-exe")
+      else()
+        add_executable(${executable} ${source})
+      endif()
+
       target_include_directories(${executable}
          PRIVATE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>"
          PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
@@ -126,8 +135,10 @@ function(build_package)
 
       file(GLOB_RECURSE library_sources RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
         "${executable_dir}/*.c" "${executable_dir}/*.cpp" "${executable_dir}/*.cc" "${executable_dir}/*.c++")
+      list(SORT library_sources)
       file(GLOB_RECURSE library_headers RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
         "${executable_dir}/*.h" "${executable_dir}/*.hpp" "${executable_dir}/*.hh" "${executable_dir}/*.h++")
+      list(SORT library_headers)
 
       list(REMOVE_ITEM library_sources ${executable_sources})
 
@@ -163,6 +174,7 @@ function(build_package)
 
   file(GLOB_RECURSE public_headers RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
     "include/*.h" "include/*.hpp" "include/*.hh" "include/*.h++")
+  list(SORT public_headers)
   list(APPEND package_headers ${public_headers})
 
   if (package_sources OR package_headers)

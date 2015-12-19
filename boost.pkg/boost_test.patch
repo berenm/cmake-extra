@@ -1,0 +1,13 @@
+diff --git a/src/cpp_main.cpp b/src/cpp_main.cpp
+index ab92ba5..a88624f 100644
+--- a/src/cpp_main.cpp
++++ b/src/cpp_main.cpp
+@@ -12,6 +12,8 @@
+ //  Description : forwarding source
+ // ***************************************************************************
+ 
++int main( int argc, char* argv[] );
++
+ #define BOOST_TEST_SOURCE
+ #include <boost/test/impl/cpp_main.ipp>
+ 

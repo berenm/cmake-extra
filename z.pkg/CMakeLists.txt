@@ -23,3 +23,5 @@ if (NOT EXISTS "${z_DIR}/src")
   file(WRITE "${z_DIR}/CMakeLists.txt"
     "build_package(VERSION \"${z_VERSION}\")\n")
 endif()
+
+find_package(z REQUIRED NO_MODULE)

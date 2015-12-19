@@ -8,4 +8,6 @@ find_package(Git REQUIRED)
 add_subdirectory(z.pkg)
 add_subdirectory(bzip2.pkg)
 add_subdirectory(png.pkg)
-add_subdirectory(boost.pkg)
+
+# Boost is a beast, lets skip it for now
+# add_subdirectory(boost.pkg)

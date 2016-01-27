@@ -1,8 +1,19 @@
-if (CMAKE_SYSTEM_ARCH)
+if (CMAKE_SYSTEM_ARCHITECTURE)
   return()
 endif()
 
-file(WRITE "${CMAKE_BINARY_DIR}/architecture.c" [[
+enable_language(C)
+
+# Based on https://github.com/petroules/solar-cmake/blob/master/TargetArch.cmake
+
+# Based on the Qt 5 processor detection code, so should be very accurate
+# https://qt.gitorious.org/qt/qtbase/blobs/master/src/corelib/global/qprocessordetection.h
+# Currently handles arm (v5, v6, v7), x86 (32/64), ia64, and ppc (32/64)
+
+# Regarding POWER/PowerPC, just as is noted in the Qt source,
+# "There are many more known variants/revisions that we do not handle/detect."
+
+file(WRITE "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testArchitecture.c" [[
 #if defined(__arm64) || defined(__arm64__)
   #error cmake_ARCH aarch64
 #elif defined(__arm__) || defined(__TARGET_ARCH_ARM) || defined(_M_ARM)
@@ -50,9 +61,9 @@ file(WRITE "${CMAKE_BINARY_DIR}/architecture.c" [[
 #endif
 ]])
 
-enable_language(C)
-try_compile(compiled ${CMAKE_BINARY_DIR} "${CMAKE_BINARY_DIR}/architecture.c" OUTPUT_VARIABLE CMAKE_SYSTEM_ARCH)
-unset(compiled)
-
-string(REGEX REPLACE "^.*cmake_ARCH ([a-zA-Z0-9_]+).*$" "\\1" CMAKE_SYSTEM_ARCH "${CMAKE_SYSTEM_ARCH}")
-message(STATUS "Target system: ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_ARCH}")
+try_compile(_Result ${CMAKE_BINARY_DIR}
+  "${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testArchitecture.c"
+  OUTPUT_VARIABLE CMAKE_SYSTEM_ARCHITECTURE)
+unset(_Result)
+string(REGEX REPLACE "^.*cmake_ARCH ([a-zA-Z0-9_]+).*$" "\\1"
+  CMAKE_SYSTEM_ARCHITECTURE "${CMAKE_SYSTEM_ARCHITECTURE}")

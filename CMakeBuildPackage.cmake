@@ -9,20 +9,20 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 include(GNUInstallDirs REQUIRED)
 include(CMakeParseArguments REQUIRED)
 include(CMakePackageConfigHelpers REQUIRED)
-include(CMakeDetectArch REQUIRED)
+include(CMakeDetermineArchitecture REQUIRED)
 
-option(CBP_EXCLUDE_SOURCE_PACKAGE_FROM_ALL
+option(CMakeBuildPackage_SOURCE_PACKAGE_EXCLUDE_FROM_ALL
   "Register the packages found in source form with EXCLUDE_FROM_ALL"
   ON)
-option(CBP_GENERATE_PACKAGE_ARCHIVES
+option(CMakeBuildPackage_ARCHIVE_ENABLED
   "Generate tar.xz archives foreach declared package"
   ON)
-option(CBP_GENERATE_SOURCE_PACKAGE_ARCHIVES
+option(CMakeBuildPackage_SOURCE_ARCHIVE_ENABLED
   "Generate tar.xz archives foreach declared package"
   ON)
 
 function(build_package)
-  cmake_parse_arguments(CBP_PACKAGE "" "NAME;VERSION" "REQUIRES" ${ARGN})
+  cmake_parse_arguments(CBP_PACKAGE "" "NAME;VERSION;CXX_STANDARD" "REQUIRES" ${ARGN})
 
   foreach(package IN LISTS CBP_PACKAGE_REQUIRES)
     if (package MATCHES "(@|==)")
@@ -50,6 +50,14 @@ function(build_package)
   endif()
   get_filename_component(soversion "${version}" NAME_WE)
 
+
+  set(CMAKE_C_EXTENSIONS OFF)
+  set(CMAKE_C_STANDARD 11)
+  set(CMAKE_C_STANDARD_REQUIRED TRUE)
+
+  set(CMAKE_CXX_EXTENSIONS OFF)
+  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
   set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
@@ -218,7 +226,7 @@ function(build_package)
     PATTERN "include/*.h++")
 
 
-  if (CBP_EXCLUDE_SOURCE_PACKAGE_FROM_ALL)
+  if (CMakeBuildPackage_SOURCE_PACKAGE_EXCLUDE_FROM_ALL)
     set(exclude EXCLUDE_FROM_ALL)
   else()
     set(exclude)
@@ -245,7 +253,7 @@ function(build_package)
   endif()
 
 
-  if (CBP_GENERATE_PACKAGE_ARCHIVES)
+  if (CMakeBuildPackage_ARCHIVE_ENABLED)
     if (NOT TARGET packages)
       add_custom_target(packages)
     endif()
@@ -264,7 +272,7 @@ function(build_package)
       set(build_type "noconfig")
     endif()
 
-    string(TOLOWER "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_ARCH}" system_name)
+    string(TOLOWER "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_ARCHITECTURE}" system_name)
 
     set(package_vername  "${package}-${version}")
     set(package_pkgdir   "${CMAKE_BINARY_DIR}/package/${package_vername}-${build_type}")
@@ -294,7 +302,7 @@ function(build_package)
     endif()
     add_dependencies(packages package-${package})
 
-    if (CBP_GENERATE_SOURCE_PACKAGE_ARCHIVES)
+    if (CMakeBuildPackage_SOURCE_ARCHIVE_ENABLED)
       file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/cmake_install_source.cmake"
         "file(INSTALL DESTINATION \"\${CMAKE_INSTALL_PREFIX}\"\n"
         "  TYPE DIRECTORY FILES \"${CMAKE_CURRENT_SOURCE_DIR}/\"\n"
@@ -327,7 +335,7 @@ list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/packages")
 
 
 if (CMAKE_SYSTEM_NAME MATCHES "[Ww][Ii][Nn][Dd][Oo][Ww][Ss]" AND
-    CMAKE_SYSTEM_ARCH MATCHES "[Aa][Rr][Mm]" AND
+    CMAKE_SYSTEM_ARCHITECTURE MATCHES "[Aa][Rr][Mm]" AND
     CMAKE_C_COMPILER_ID MATCHES "MSVC")
   add_definitions(-D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1)
 endif()

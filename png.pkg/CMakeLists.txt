@@ -24,7 +24,7 @@ if (NOT EXISTS "${png_DIR}/src")
   file(WRITE "${png_DIR}/png-config.cmake"
     "add_subdirectory(\"${png_DIR}\" \"\${CMAKE_BINARY_DIR}/packages/png\" EXCLUDE_FROM_ALL)\n")
   file(WRITE "${png_DIR}/CMakeLists.txt"
-    "build_package(VERSION \"${png_VERSION}\" REQUIRES z)\n")
+    "build_package(NAME png VERSION \"${png_VERSION}\" REQUIRES z)\n")
 endif()
 
 find_package(png REQUIRED NO_MODULE)

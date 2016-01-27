@@ -17,7 +17,7 @@ if (NOT EXISTS "${z_DIR}/src")
   file(WRITE "${z_DIR}/z-config.cmake"
     "add_subdirectory(\"${z_DIR}\" \"\${CMAKE_BINARY_DIR}/packages/z\" EXCLUDE_FROM_ALL)\n")
   file(WRITE "${z_DIR}/CMakeLists.txt"
-    "build_package(VERSION \"${z_VERSION}\")\n")
+    "build_package(NAME z VERSION \"${z_VERSION}\")\n")
 endif()
 
 find_package(z REQUIRED NO_MODULE)

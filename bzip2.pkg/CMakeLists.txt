@@ -29,7 +29,7 @@ if (NOT EXISTS "${bzip2_DIR}/src")
   file(WRITE "${bzip2_DIR}/bzip2-config.cmake"
     "add_subdirectory(\"${bzip2_DIR}\" \"\${CMAKE_BINARY_DIR}/packages/bzip2\" EXCLUDE_FROM_ALL)\n")
   file(WRITE "${bzip2_DIR}/CMakeLists.txt"
-    "build_package(VERSION \"${bzip2_VERSION}\")\n")
+    "build_package(NAME bzip2 VERSION \"${bzip2_VERSION}\")\n")
 endif()
 
 find_package(bzip2 REQUIRED NO_MODULE)

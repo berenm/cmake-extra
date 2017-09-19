@@ -1,0 +1,334 @@
+From 2e82865d61bd211927a74159b279133ee103f6ee Mon Sep 17 00:00:00 2001
+From: Beren Minor <beren.minor+git@gmail.com>
+Date: Wed, 20 Sep 2017 00:16:00 +0200
+Subject: [PATCH 1/2] Move sources to src and public headers to include
+
+---
+ zconf.h => include/zconf.h   | 158 +------------------------------------------
+ zlib.h => include/zlib.h     |   0
+ adler32.c => src/adler32.c   |   0
+ compress.c => src/compress.c |   0
+ crc32.c => src/crc32.c       |   0
+ crc32.h => src/crc32.h       |   0
+ deflate.c => src/deflate.c   |   0
+ deflate.h => src/deflate.h   |   0
+ gzclose.c => src/gzclose.c   |   0
+ gzguts.h => src/gzguts.h     |   0
+ gzlib.c => src/gzlib.c       |   0
+ gzread.c => src/gzread.c     |   0
+ gzwrite.c => src/gzwrite.c   |   0
+ infback.c => src/infback.c   |   0
+ inffast.c => src/inffast.c   |   0
+ inffast.h => src/inffast.h   |   0
+ inffixed.h => src/inffixed.h |   0
+ inflate.c => src/inflate.c   |   0
+ inflate.h => src/inflate.h   |   0
+ inftrees.c => src/inftrees.c |   0
+ inftrees.h => src/inftrees.h |   0
+ trees.c => src/trees.c       |   0
+ trees.h => src/trees.h       |   0
+ uncompr.c => src/uncompr.c   |   0
+ zutil.c => src/zutil.c       |   0
+ zutil.h => src/zutil.h       |   0
+ 26 files changed, 2 insertions(+), 156 deletions(-)
+ rename zconf.h => include/zconf.h (59%)
+ rename zlib.h => include/zlib.h (100%)
+ rename adler32.c => src/adler32.c (100%)
+ rename compress.c => src/compress.c (100%)
+ rename crc32.c => src/crc32.c (100%)
+ rename crc32.h => src/crc32.h (100%)
+ rename deflate.c => src/deflate.c (100%)
+ rename deflate.h => src/deflate.h (100%)
+ rename gzclose.c => src/gzclose.c (100%)
+ rename gzguts.h => src/gzguts.h (100%)
+ rename gzlib.c => src/gzlib.c (100%)
+ rename gzread.c => src/gzread.c (100%)
+ rename gzwrite.c => src/gzwrite.c (100%)
+ rename infback.c => src/infback.c (100%)
+ rename inffast.c => src/inffast.c (100%)
+ rename inffast.h => src/inffast.h (100%)
+ rename inffixed.h => src/inffixed.h (100%)
+ rename inflate.c => src/inflate.c (100%)
+ rename inflate.h => src/inflate.h (100%)
+ rename inftrees.c => src/inftrees.c (100%)
+ rename inftrees.h => src/inftrees.h (100%)
+ rename trees.c => src/trees.c (100%)
+ rename trees.h => src/trees.h (100%)
+ rename uncompr.c => src/uncompr.c (100%)
+ rename zutil.c => src/zutil.c (100%)
+ rename zutil.h => src/zutil.h (100%)
+
+diff --git a/zconf.h b/include/zconf.h
+similarity index 59%
+rename from zconf.h
+rename to include/zconf.h
+index 5e1d68a..b0adef9 100644
+--- a/zconf.h
++++ b/include/zconf.h
+@@ -8,162 +8,8 @@
+ #ifndef ZCONF_H
+ #define ZCONF_H
+
+-/*
+- * If you *really* need a unique prefix for all types and library functions,
+- * compile with -DZ_PREFIX. The "standard" zlib should be compiled without it.
+- * Even better than compiling with -DZ_PREFIX would be to use configure to set
+- * this permanently in zconf.h using "./configure --zprefix".
+- */
+-#ifdef Z_PREFIX     /* may be set to #if 1 by ./configure */
+-#  define Z_PREFIX_SET
+-
+-/* all linked symbols and init macros */
+-#  define _dist_code            z__dist_code
+-#  define _length_code          z__length_code
+-#  define _tr_align             z__tr_align
+-#  define _tr_flush_bits        z__tr_flush_bits
+-#  define _tr_flush_block       z__tr_flush_block
+-#  define _tr_init              z__tr_init
+-#  define _tr_stored_block      z__tr_stored_block
+-#  define _tr_tally             z__tr_tally
+-#  define adler32               z_adler32
+-#  define adler32_combine       z_adler32_combine
+-#  define adler32_combine64     z_adler32_combine64
+-#  define adler32_z             z_adler32_z
+-#  ifndef Z_SOLO
+-#    define compress              z_compress
+-#    define compress2             z_compress2
+-#    define compressBound         z_compressBound
+-#  endif
+-#  define crc32                 z_crc32
+-#  define crc32_combine         z_crc32_combine
+-#  define crc32_combine64       z_crc32_combine64
+-#  define crc32_z               z_crc32_z
+-#  define deflate               z_deflate
+-#  define deflateBound          z_deflateBound
+-#  define deflateCopy           z_deflateCopy
+-#  define deflateEnd            z_deflateEnd
+-#  define deflateGetDictionary  z_deflateGetDictionary
+-#  define deflateInit           z_deflateInit
+-#  define deflateInit2          z_deflateInit2
+-#  define deflateInit2_         z_deflateInit2_
+-#  define deflateInit_          z_deflateInit_
+-#  define deflateParams         z_deflateParams
+-#  define deflatePending        z_deflatePending
+-#  define deflatePrime          z_deflatePrime
+-#  define deflateReset          z_deflateReset
+-#  define deflateResetKeep      z_deflateResetKeep
+-#  define deflateSetDictionary  z_deflateSetDictionary
+-#  define deflateSetHeader      z_deflateSetHeader
+-#  define deflateTune           z_deflateTune
+-#  define deflate_copyright     z_deflate_copyright
+-#  define get_crc_table         z_get_crc_table
+-#  ifndef Z_SOLO
+-#    define gz_error              z_gz_error
+-#    define gz_intmax             z_gz_intmax
+-#    define gz_strwinerror        z_gz_strwinerror
+-#    define gzbuffer              z_gzbuffer
+-#    define gzclearerr            z_gzclearerr
+-#    define gzclose               z_gzclose
+-#    define gzclose_r             z_gzclose_r
+-#    define gzclose_w             z_gzclose_w
+-#    define gzdirect              z_gzdirect
+-#    define gzdopen               z_gzdopen
+-#    define gzeof                 z_gzeof
+-#    define gzerror               z_gzerror
+-#    define gzflush               z_gzflush
+-#    define gzfread               z_gzfread
+-#    define gzfwrite              z_gzfwrite
+-#    define gzgetc                z_gzgetc
+-#    define gzgetc_               z_gzgetc_
+-#    define gzgets                z_gzgets
+-#    define gzoffset              z_gzoffset
+-#    define gzoffset64            z_gzoffset64
+-#    define gzopen                z_gzopen
+-#    define gzopen64              z_gzopen64
+-#    ifdef _WIN32
+-#      define gzopen_w              z_gzopen_w
+-#    endif
+-#    define gzprintf              z_gzprintf
+-#    define gzputc                z_gzputc
+-#    define gzputs                z_gzputs
+-#    define gzread                z_gzread
+-#    define gzrewind              z_gzrewind
+-#    define gzseek                z_gzseek
+-#    define gzseek64              z_gzseek64
+-#    define gzsetparams           z_gzsetparams
+-#    define gztell                z_gztell
+-#    define gztell64              z_gztell64
+-#    define gzungetc              z_gzungetc
+-#    define gzvprintf             z_gzvprintf
+-#    define gzwrite               z_gzwrite
+-#  endif
+-#  define inflate               z_inflate
+-#  define inflateBack           z_inflateBack
+-#  define inflateBackEnd        z_inflateBackEnd
+-#  define inflateBackInit       z_inflateBackInit
+-#  define inflateBackInit_      z_inflateBackInit_
+-#  define inflateCodesUsed      z_inflateCodesUsed
+-#  define inflateCopy           z_inflateCopy
+-#  define inflateEnd            z_inflateEnd
+-#  define inflateGetDictionary  z_inflateGetDictionary
+-#  define inflateGetHeader      z_inflateGetHeader
+-#  define inflateInit           z_inflateInit
+-#  define inflateInit2          z_inflateInit2
+-#  define inflateInit2_         z_inflateInit2_
+-#  define inflateInit_          z_inflateInit_
+-#  define inflateMark           z_inflateMark
+-#  define inflatePrime          z_inflatePrime
+-#  define inflateReset          z_inflateReset
+-#  define inflateReset2         z_inflateReset2
+-#  define inflateResetKeep      z_inflateResetKeep
+-#  define inflateSetDictionary  z_inflateSetDictionary
+-#  define inflateSync           z_inflateSync
+-#  define inflateSyncPoint      z_inflateSyncPoint
+-#  define inflateUndermine      z_inflateUndermine
+-#  define inflateValidate       z_inflateValidate
+-#  define inflate_copyright     z_inflate_copyright
+-#  define inflate_fast          z_inflate_fast
+-#  define inflate_table         z_inflate_table
+-#  ifndef Z_SOLO
+-#    define uncompress            z_uncompress
+-#    define uncompress2           z_uncompress2
+-#  endif
+-#  define zError                z_zError
+-#  ifndef Z_SOLO
+-#    define zcalloc               z_zcalloc
+-#    define zcfree                z_zcfree
+-#  endif
+-#  define zlibCompileFlags      z_zlibCompileFlags
+-#  define zlibVersion           z_zlibVersion
+-
+-/* all zlib typedefs in zlib.h and zconf.h */
+-#  define Byte                  z_Byte
+-#  define Bytef                 z_Bytef
+-#  define alloc_func            z_alloc_func
+-#  define charf                 z_charf
+-#  define free_func             z_free_func
+-#  ifndef Z_SOLO
+-#    define gzFile                z_gzFile
+-#  endif
+-#  define gz_header             z_gz_header
+-#  define gz_headerp            z_gz_headerp
+-#  define in_func               z_in_func
+-#  define intf                  z_intf
+-#  define out_func              z_out_func
+-#  define uInt                  z_uInt
+-#  define uIntf                 z_uIntf
+-#  define uLong                 z_uLong
+-#  define uLongf                z_uLongf
+-#  define voidp                 z_voidp
+-#  define voidpc                z_voidpc
+-#  define voidpf                z_voidpf
+-
+-/* all zlib structs in zlib.h and zconf.h */
+-#  define gz_header_s           z_gz_header_s
+-#  define internal_state        z_internal_state
+-
+-#endif
++#define HAVE_UNISTD_H __has_include(<unistd.h>)
++#define HAVE_STDARG_H __has_include(<stdarg.h>)
+
+ #if defined(__MSDOS__) && !defined(MSDOS)
+ #  define MSDOS
+diff --git a/zlib.h b/include/zlib.h
+similarity index 100%
+rename from zlib.h
+rename to include/zlib.h
+diff --git a/adler32.c b/src/adler32.c
+similarity index 100%
+rename from adler32.c
+rename to src/adler32.c
+diff --git a/compress.c b/src/compress.c
+similarity index 100%
+rename from compress.c
+rename to src/compress.c
+diff --git a/crc32.c b/src/crc32.c
+similarity index 100%
+rename from crc32.c
+rename to src/crc32.c
+diff --git a/crc32.h b/src/crc32.h
+similarity index 100%
+rename from crc32.h
+rename to src/crc32.h
+diff --git a/deflate.c b/src/deflate.c
+similarity index 100%
+rename from deflate.c
+rename to src/deflate.c
+diff --git a/deflate.h b/src/deflate.h
+similarity index 100%
+rename from deflate.h
+rename to src/deflate.h
+diff --git a/gzclose.c b/src/gzclose.c
+similarity index 100%
+rename from gzclose.c
+rename to src/gzclose.c
+diff --git a/gzguts.h b/src/gzguts.h
+similarity index 100%
+rename from gzguts.h
+rename to src/gzguts.h
+diff --git a/gzlib.c b/src/gzlib.c
+similarity index 100%
+rename from gzlib.c
+rename to src/gzlib.c
+diff --git a/gzread.c b/src/gzread.c
+similarity index 100%
+rename from gzread.c
+rename to src/gzread.c
+diff --git a/gzwrite.c b/src/gzwrite.c
+similarity index 100%
+rename from gzwrite.c
+rename to src/gzwrite.c
+diff --git a/infback.c b/src/infback.c
+similarity index 100%
+rename from infback.c
+rename to src/infback.c
+diff --git a/inffast.c b/src/inffast.c
+similarity index 100%
+rename from inffast.c
+rename to src/inffast.c
+diff --git a/inffast.h b/src/inffast.h
+similarity index 100%
+rename from inffast.h
+rename to src/inffast.h
+diff --git a/inffixed.h b/src/inffixed.h
+similarity index 100%
+rename from inffixed.h
+rename to src/inffixed.h
+diff --git a/inflate.c b/src/inflate.c
+similarity index 100%
+rename from inflate.c
+rename to src/inflate.c
+diff --git a/inflate.h b/src/inflate.h
+similarity index 100%
+rename from inflate.h
+rename to src/inflate.h
+diff --git a/inftrees.c b/src/inftrees.c
+similarity index 100%
+rename from inftrees.c
+rename to src/inftrees.c
+diff --git a/inftrees.h b/src/inftrees.h
+similarity index 100%
+rename from inftrees.h
+rename to src/inftrees.h
+diff --git a/trees.c b/src/trees.c
+similarity index 100%
+rename from trees.c
+rename to src/trees.c
+diff --git a/trees.h b/src/trees.h
+similarity index 100%
+rename from trees.h
+rename to src/trees.h
+diff --git a/uncompr.c b/src/uncompr.c
+similarity index 100%
+rename from uncompr.c
+rename to src/uncompr.c
+diff --git a/zutil.c b/src/zutil.c
+similarity index 100%
+rename from zutil.c
+rename to src/zutil.c
+diff --git a/zutil.h b/src/zutil.h
+similarity index 100%
+rename from zutil.h
+rename to src/zutil.h
+--
+2.14.1

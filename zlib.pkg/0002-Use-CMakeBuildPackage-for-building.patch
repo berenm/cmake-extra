@@ -1,16 +1,16 @@
-From 13c777e8c43acb4e57b7d7b90e2dcf9d7b928364 Mon Sep 17 00:00:00 2001
+From f4e0e9e8ef6c5254da824937fdcce61a9cacefc6 Mon Sep 17 00:00:00 2001
 From: Beren Minor <beren.minor+git@gmail.com>
 Date: Wed, 20 Sep 2017 00:16:15 +0200
-Subject: [PATCH 2/2] Use CMakeBuildPackage for building
+Subject: [PATCH 2/3] Use CMakeBuildPackage for building
 
 ---
  CMakeLists.txt | 254 ++-------------------------------------------------------
- 2 files changed, 8 insertions(+), 249 deletions(-)
+ 1 file changed, 5 insertions(+), 249 deletions(-)
  rewrite CMakeLists.txt (99%)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 dissimilarity index 99%
-index 0fe939d..3fe7df5 100644
+index 0fe939d..6714da0 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,249 +1,5 @@
@@ -268,6 +268,6 @@ index 0fe939d..3fe7df5 100644
 +include(CMakeBuildPackage)
 +
 +build_package(VERSION "1.2.11")
---
+-- 
 2.14.1
 

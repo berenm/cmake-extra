@@ -1,0 +1,261 @@
+diff --git a/nanoftp.c b/nanoftp.c
+index 2135ab9..b4893bb 100644
+--- a/nanoftp.c
++++ b/nanoftp.c
+@@ -2048,75 +2048,9 @@ xmlNanoFTPClose(void *ctx) {
+     }
+     xmlNanoFTPFreeCtxt(ctxt);
+     return(0);
+ }
+ 
+-#ifdef STANDALONE
+-/************************************************************************
+- *									*
+- *			Basic test in Standalone mode			*
+- *									*
+- ************************************************************************/
+-static
+-void ftpList(void *userData, const char *filename, const char* attrib,
+-	     const char *owner, const char *group, unsigned long size, int links,
+-	     int year, const char *month, int day, int hour, int minute) {
+-    xmlGenericError(xmlGenericErrorContext,
+-	    "%s %s %s %ld %s\n", attrib, owner, group, size, filename);
+-}
+-static
+-void ftpData(void *userData, const char *data, int len) {
+-    if (userData == NULL) return;
+-    if (len <= 0) {
+-	fclose((FILE*)userData);
+-	return;
+-    }
+-    fwrite(data, len, 1, (FILE*)userData);
+-}
+-
+-int main(int argc, char **argv) {
+-    void *ctxt;
+-    FILE *output;
+-    char *tstfile = NULL;
+-
+-    xmlNanoFTPInit();
+-    if (argc > 1) {
+-	ctxt = xmlNanoFTPNewCtxt(argv[1]);
+-	if (xmlNanoFTPConnect(ctxt) < 0) {
+-	    xmlGenericError(xmlGenericErrorContext,
+-		    "Couldn't connect to %s\n", argv[1]);
+-	    exit(1);
+-	}
+-	if (argc > 2)
+-	    tstfile = argv[2];
+-    } else
+-	ctxt = xmlNanoFTPConnectTo("localhost", 0);
+-    if (ctxt == NULL) {
+-        xmlGenericError(xmlGenericErrorContext,
+-		"Couldn't connect to localhost\n");
+-        exit(1);
+-    }
+-    xmlNanoFTPList(ctxt, ftpList, NULL, tstfile);
+-    output = fopen("/tmp/tstdata", "w");
+-    if (output != NULL) {
+-	if (xmlNanoFTPGet(ctxt, ftpData, (void *) output, tstfile) < 0)
+-	    xmlGenericError(xmlGenericErrorContext,
+-		    "Failed to get file\n");
+-
+-    }
+-    xmlNanoFTPClose(ctxt);
+-    xmlMemoryDump();
+-    exit(0);
+-}
+-#endif /* STANDALONE */
+ #else /* !LIBXML_FTP_ENABLED */
+-#ifdef STANDALONE
+-#include <stdio.h>
+-int main(int argc, char **argv) {
+-    xmlGenericError(xmlGenericErrorContext,
+-	    "%s : FTP support not compiled in\n", argv[0]);
+-    return(0);
+-}
+-#endif /* STANDALONE */
+ #endif /* LIBXML_FTP_ENABLED */
+ #define bottom_nanoftp
+ #include "elfgcchack.h"
+diff --git a/nanohttp.c b/nanohttp.c
+index e109ad7..4c7b051 100644
+--- a/nanohttp.c
++++ b/nanohttp.c
+@@ -1854,37 +1854,8 @@ xmlNanoHTTPFetchContent( void * ctx, char ** ptr, int * len ) {
+ 
+     return ( rc );
+ }
+ 
+-#ifdef STANDALONE
+-int main(int argc, char **argv) {
+-    char *contentType = NULL;
+-
+-    if (argv[1] != NULL) {
+-	if (argv[2] != NULL)
+-	    xmlNanoHTTPFetch(argv[1], argv[2], &contentType);
+-        else
+-	    xmlNanoHTTPFetch(argv[1], "-", &contentType);
+-	if (contentType != NULL) xmlFree(contentType);
+-    } else {
+-        xmlGenericError(xmlGenericErrorContext,
+-		"%s: minimal HTTP GET implementation\n", argv[0]);
+-        xmlGenericError(xmlGenericErrorContext,
+-		"\tusage %s [ URL [ filename ] ]\n", argv[0]);
+-    }
+-    xmlNanoHTTPCleanup();
+-    xmlMemoryDump();
+-    return(0);
+-}
+-#endif /* STANDALONE */
+ #else /* !LIBXML_HTTP_ENABLED */
+-#ifdef STANDALONE
+-#include <stdio.h>
+-int main(int argc, char **argv) {
+-    xmlGenericError(xmlGenericErrorContext,
+-	    "%s : HTTP support not compiled in\n", argv[0]);
+-    return(0);
+-}
+-#endif /* STANDALONE */
+ #endif /* LIBXML_HTTP_ENABLED */
+ #define bottom_nanohttp
+ #include "elfgcchack.h"
+diff --git a/schematron.c b/schematron.c
+index 6200f2d..24d7849 100644
+--- a/schematron.c
++++ b/schematron.c
+@@ -1739,50 +1739,7 @@ xmlSchematronValidateDoc(xmlSchematronValidCtxtPtr ctxt, xmlDocPtr instance)
+     }
+     return(ctxt->nberrors);
+ }
+ 
+-#ifdef STANDALONE
+-int
+-main(void)
+-{
+-    int ret;
+-    xmlDocPtr instance;
+-    xmlSchematronParserCtxtPtr pctxt;
+-    xmlSchematronValidCtxtPtr vctxt;
+-    xmlSchematronPtr schema = NULL;
+-
+-    pctxt = xmlSchematronNewParserCtxt("tst.sct");
+-    if (pctxt == NULL) {
+-        fprintf(stderr, "failed to build schematron parser\n");
+-    } else {
+-        schema = xmlSchematronParse(pctxt);
+-	if (schema == NULL) {
+-	    fprintf(stderr, "failed to compile schematron\n");
+-	}
+-	xmlSchematronFreeParserCtxt(pctxt);
+-    }
+-    instance = xmlReadFile("tst.sct", NULL,
+-                           XML_PARSE_NOENT | XML_PARSE_NOCDATA);
+-    if (instance == NULL) {
+-	fprintf(stderr, "failed to parse instance\n");
+-    }
+-    if ((schema != NULL) && (instance != NULL)) {
+-        vctxt = xmlSchematronNewValidCtxt(schema);
+-	if (vctxt == NULL) {
+-	    fprintf(stderr, "failed to build schematron validator\n");
+-	} else {
+-	    ret = xmlSchematronValidateDoc(vctxt, instance);
+-	    xmlSchematronFreeValidCtxt(vctxt);
+-	}
+-    }
+-    xmlSchematronFree(schema);
+-    xmlFreeDoc(instance);
+-
+-    xmlCleanupParser();
+-    xmlMemoryDump();
+-
+-    return (0);
+-}
+-#endif
+ #define bottom_schematron
+ #include "elfgcchack.h"
+ #endif /* LIBXML_SCHEMATRON_ENABLED */
+diff --git a/xmlreader.c b/xmlreader.c
+index f285790..3476faf 100644
+--- a/xmlreader.c
++++ b/xmlreader.c
+@@ -5877,79 +5877,6 @@ xmlBase64Decode(const unsigned char *in, unsigned long *inlen,
+ /*
+  * Test routine for the xmlBase64Decode function
+  */
+-#if 0
+-int
+-main(int argc, char **argv)
+-{
+-    char *input = "  VW4 gcGV0        \n      aXQgdGVzdCAuCg== ";
+-
+-    char output[100];
+-
+-    char output2[100];
+-
+-    char output3[100];
+-
+-    unsigned long inlen = strlen(input);
+-
+-    unsigned long outlen = 100;
+-
+-    int ret;
+-
+-    unsigned long cons, tmp, tmp2, prod;
+-
+-    /*
+-     * Direct
+-     */
+-    ret = xmlBase64Decode(input, &inlen, output, &outlen);
+-
+-    output[outlen] = 0;
+-    printf("ret: %d, inlen: %ld , outlen: %ld, output: '%s'\n", ret, inlen,
+-           outlen, output)indent: Standard input:179: Error:Unmatched #endif
+-;
+-
+-    /*
+-     * output chunking
+-     */
+-    cons = 0;
+-    prod = 0;
+-    while (cons < inlen) {
+-        tmp = 5;
+-        tmp2 = inlen - cons;
+-
+-        printf("%ld %ld\n", cons, prod);
+-        ret = xmlBase64Decode(&input[cons], &tmp2, &output2[prod], &tmp);
+-        cons += tmp2;
+-        prod += tmp;
+-        printf("%ld %ld\n", cons, prod);
+-    }
+-    output2[outlen] = 0;
+-    printf("ret: %d, cons: %ld , prod: %ld, output: '%s'\n", ret, cons,
+-           prod, output2);
+-
+-    /*
+-     * input chunking
+-     */
+-    cons = 0;
+-    prod = 0;
+-    while (cons < inlen) {
+-        tmp = 100 - prod;
+-        tmp2 = inlen - cons;
+-        if (tmp2 > 5)
+-            tmp2 = 5;
+-
+-        printf("%ld %ld\n", cons, prod);
+-        ret = xmlBase64Decode(&input[cons], &tmp2, &output3[prod], &tmp);
+-        cons += tmp2;
+-        prod += tmp;
+-        printf("%ld %ld\n", cons, prod);
+-    }
+-    output3[outlen] = 0;
+-    printf("ret: %d, cons: %ld , prod: %ld, output: '%s'\n", ret, cons,
+-           prod, output3);
+-    return (0);
+-
+-}
+-#endif
+ #endif /* NOT_USED_YET */
+ #define bottom_xmlreader
+ #include "elfgcchack.h"

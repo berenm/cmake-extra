@@ -1,0 +1,24 @@
+From 6c91f54d36ff09607624d321246b088fb9eb1bb5 Mon Sep 17 00:00:00 2001
+From: Beren Minor <beren.minor+git@gmail.com>
+Date: Wed, 20 Sep 2017 00:46:45 +0200
+Subject: [PATCH 3/3] Add C++ module-ts file wrapping zlib.h in zlib namespace
+
+---
+ include/zlib.cppm | 5 +++++
+ 1 file changed, 5 insertions(+)
+ create mode 100644 include/zlib.cppm
+
+diff --git a/include/zlib.cppm b/include/zlib.cppm
+new file mode 100644
+index 0000000..60bb3c4
+--- /dev/null
++++ b/include/zlib.cppm
+@@ -0,0 +1,5 @@
++export module zlib;
++
++export namespace zlib {
++#include "zlib.h"
++} // namespace zlib
+-- 
+2.14.1
+

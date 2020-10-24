@@ -5,6 +5,8 @@ project(cmake-packages)
 
 find_package(Git REQUIRED)
 
+add_compile_options(-Wno-error=module-file-config-mismatch)
+
 function(create_package PACKAGE)
   if (NOT EXISTS "${${PACKAGE}_DIR}")
     message(STATUS "Downloading ${PACKAGE} package")
